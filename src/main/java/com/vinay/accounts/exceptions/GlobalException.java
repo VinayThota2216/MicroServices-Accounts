@@ -33,7 +33,21 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(CustomerAlreadyExistsException.class)
-    public ResponseEntity<ErrorResponseDto> handleCustomerIsNotFound(CustomerAlreadyExistsException ex, WebRequest request) {
+    public ResponseEntity<ErrorResponseDto> handleCustomerAlreadyExists(CustomerAlreadyExistsException ex, WebRequest request) {
+
+        ErrorResponseDto responseDto=ErrorResponseDto.builder()
+                .apiPath(request.getDescription(false))
+                .status(HttpStatus.CONFLICT)
+                .message(ex.getMessage())
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(responseDto);
+    }
+
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponseDto> handleCustomExceptionHandler(RuntimeException ex, WebRequest request) {
 
         ErrorResponseDto responseDto=ErrorResponseDto.builder()
                 .apiPath(request.getDescription(false))
